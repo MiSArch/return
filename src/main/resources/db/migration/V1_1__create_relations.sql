@@ -3,7 +3,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE TABLE OrderEntity (
     id UUID PRIMARY KEY UNIQUE,
     userId UUID NOT NULL
-)
+);
 
 CREATE TABLE ReturnEntity (
     id UUID PRIMARY KEY UNIQUE DEFAULT uuid_generate_v4(),
@@ -20,12 +20,12 @@ CREATE TABLE OrderItemEntity (
     orderId UUID NOT NULL,
     compensatableAmount BIGINT NULL,
     productVariantVersionId UUID NULL,
-    FOREIGN KEY (orderId) REFERENCES OrderEntity(id),
+    FOREIGN KEY (orderId) REFERENCES OrderEntity(id)
 );
 
 CREATE TABLE ProductVariantVersion (
     id UUID PRIMARY KEY UNIQUE,
-    canBeReturnedForDays DOUBLE PRECISION,
+    canBeReturnedForDays DOUBLE PRECISION
 );
 
 CREATE TABLE ShipmentEntity (

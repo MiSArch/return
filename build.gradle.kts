@@ -50,6 +50,6 @@ tasks.withType<KotlinCompile> {
 
 graphql {
 	schema {
-		packages = listOf("org.misarch.return")
+		packages = listOf("org.misarch.returns")
 	}
 }

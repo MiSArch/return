@@ -7,6 +7,6 @@ spring:
     url: jdbc:postgresql://return-db:5432/return
     locations: classpath:db/migration
 graphql:
-  packages: org.misarch.return
+  packages: org.misarch.returns
   federation:
     enabled: true
