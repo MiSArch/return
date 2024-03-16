@@ -5,7 +5,7 @@ package org.misarch.returns.event
  */
 object ReturnEvents {
     /**
-     * Topic for user creation events (a user has been created)
+     * Topic for return creation events (a shipment return has been created)
      */
     const val RETURN_CREATED = "return/return/created"
 
