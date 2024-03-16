@@ -56,7 +56,7 @@ class EventController(
         @RequestBody
         cloudEvent: CloudEvent<ShipmentStatusUpdatedDTO>
     ) {
-        shipmentService.updateShipmentStatus(cloudEvent.data)
+        shipmentService.updateDeliveredAt(cloudEvent.data)
     }
 
     /**

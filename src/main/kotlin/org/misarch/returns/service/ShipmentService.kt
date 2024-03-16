@@ -46,12 +46,12 @@ class ShipmentService(
     }
 
     /**
-     * Updates the status of a shipment
+     * Updates deliveredAt if the status is DELIVERED
      *
-     * @param updateDTO the update to apply
+     * @param updateDTO contains the new status and the id of the shipment
      * @return the updated shipment
      */
-    suspend fun updateShipmentStatus(updateDTO: ShipmentStatusUpdatedDTO) {
+    suspend fun updateDeliveredAt(updateDTO: ShipmentStatusUpdatedDTO) {
         if (updateDTO.status == ShipmentStatus.DELIVERED) {
             val shipment = repository.findById(updateDTO.id).awaitSingle()
             shipment.deliveredAt = OffsetDateTime.now()
