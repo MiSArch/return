@@ -90,10 +90,11 @@ class ReturnService(
         require(orderItems.all { it.orderId == orderId }) { "All order items must belong to the same order" }
         for (orderItem in orderItems) {
             val productVariantVersion = productVariantVersionRepository.findById(orderItem.productVariantVersionId!!).awaitSingle()
-            require(productVariantVersion.canBeReturnedForDays != null) { "Order item ${orderItem.id} cannot be returned" }
-            val passedSeconds = Duration.between(shipmentsById[orderItem.sentWithId]!!.deliveredAt, OffsetDateTime.now()).toSeconds()
-            val passedDays = passedSeconds.toDouble() / Duration.ofDays(1).toSeconds()
-            require(passedDays <= productVariantVersion.canBeReturnedForDays) { "Order item ${orderItem.id} can no longer be returned" }
+            if (productVariantVersion.canBeReturnedForDays != null) {
+                require(productVariantVersion.canBeReturnedForDays > 0) { "Order item ${orderItem.id} cannot be returned" }
+                val passedDays = Duration.between(shipmentsById[orderItem.sentWithId]!!.deliveredAt, OffsetDateTime.now()).toDays()
+                require(passedDays <= productVariantVersion.canBeReturnedForDays) { "Order item ${orderItem.id} can no longer be returned" }
+            }
         }
     }
 

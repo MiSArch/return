@@ -7,12 +7,12 @@ import java.util.*
 /**
  * Entity for an productVariantVersion item
  *
- * @property userId id of the user the productVariantVersion is connected to
+ * @property canBeReturnedForDays number of days the productVariantVersion can be returned, null if it cannot be returned
  * @property id unique identifier of the productVariantVersion item
  */
 @Table
 class ProductVariantVersionEntity(
-    val canBeReturnedForDays: Double?,
+    val canBeReturnedForDays: Int?,
     @Id
     val id: UUID
 ) {

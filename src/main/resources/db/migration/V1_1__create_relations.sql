@@ -25,7 +25,7 @@ CREATE TABLE OrderItemEntity (
 
 CREATE TABLE ProductVariantVersion (
     id UUID PRIMARY KEY UNIQUE,
-    canBeReturnedForDays DOUBLE PRECISION
+    canBeReturnedForDays INT NULL
 );
 
 CREATE TABLE ShipmentEntity (

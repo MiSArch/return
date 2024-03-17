@@ -18,7 +18,7 @@ interface ProductVariantVersionRepository : QuerydslR2dbcRepository<ProductVaria
     @Query("INSERT INTO ProductVariantVersionEntity (id, canBeReturnedForDays) VALUES (:id, :canBeReturnedForDays)")
     suspend fun createProductVariantVersion(
         @Param("id") id: UUID,
-        @Param("canBeReturnedForDays") canBeReturnedForDays: Double?
+        @Param("canBeReturnedForDays") canBeReturnedForDays: Int?
     )
 
 }

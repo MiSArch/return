@@ -10,5 +10,5 @@ import java.util.*
  */
 data class ProductVariantVersionDTO(
     val id: UUID,
-    val canBeReturnedForDays: Double?,
+    val canBeReturnedForDays: Int?,
 )
