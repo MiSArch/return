@@ -7,7 +7,7 @@ import java.util.*
 /**
  * Entity for an productVariantVersion item
  *
- * @property canBeReturnedForDays number of days the productVariantVersion can be returned, null if it cannot be returned
+ * @property canBeReturnedForDays number of days the productVariantVersion can be returned, null if it can be returned forever
  * @property id unique identifier of the productVariantVersion item
  */
 @Table
