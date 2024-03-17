@@ -36,7 +36,11 @@ class ReturnEntity(
 
     override fun toDTO(): Return {
         return Return(
-            id = id!!, reason = reason, orderId = orderId, refundedAmount = refundedAmount.toInt()
+            id = id!!,
+            reason = reason,
+            orderId = orderId,
+            refundedAmount = refundedAmount.toInt(),
+            createdAt = createdAt
         )
     }
 

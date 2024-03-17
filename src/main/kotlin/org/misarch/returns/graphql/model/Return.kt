@@ -9,6 +9,7 @@ import org.misarch.returns.graphql.model.connection.base.CommonOrder
 import org.misarch.returns.persistence.model.OrderItemEntity
 import org.misarch.returns.persistence.repository.OrderItemRepository
 import org.springframework.beans.factory.annotation.Autowired
+import java.time.OffsetDateTime
 import java.util.*
 
 @GraphQLDescription("A return.")
@@ -18,6 +19,8 @@ class Return(
     val reason: String,
     @property:GraphQLDescription("The amount of money refunded.")
     val refundedAmount: Int,
+    @property:GraphQLDescription("The time the return was created.")
+    val createdAt: OffsetDateTime,
     private val orderId: UUID
 ) : Node(id) {
 
