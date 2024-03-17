@@ -3,15 +3,16 @@ package org.misarch.returns.service
 import kotlinx.coroutines.reactor.awaitSingle
 import org.misarch.returns.event.EventPublisher
 import org.misarch.returns.event.ReturnEvents
-import org.misarch.returns.event.model.ReturnDTO
 import org.misarch.returns.graphql.AuthorizedUser
 import org.misarch.returns.graphql.input.CreateReturnInput
 import org.misarch.returns.persistence.model.OrderItemEntity
 import org.misarch.returns.persistence.model.ReturnEntity
+import org.misarch.returns.persistence.model.ShipmentEntity
 import org.misarch.returns.persistence.repository.*
 import org.springframework.stereotype.Service
 import java.time.Duration
 import java.time.OffsetDateTime
+import java.util.*
 
 /**
  * Service for [ReturnEntity]s
@@ -47,7 +48,11 @@ class ReturnService(
         val orderId = orderItems.first().orderId
         val refundedAmount = orderItems.sumOf { it.compensatableAmount!! }
         val returnEntity = ReturnEntity(
-            reason = returnInput.reason, orderId = orderId, refundedAmount = refundedAmount, id = null
+            reason = returnInput.reason,
+            orderId = orderId,
+            refundedAmount = refundedAmount,
+            createdAt = OffsetDateTime.now(),
+            id = null
         )
         val savedReturn = repository.save(returnEntity).awaitSingle()
         for (orderItem in orderItems) {
@@ -55,8 +60,7 @@ class ReturnService(
         }
         orderItemRepository.saveAll(orderItems).collectList().awaitSingle()
         eventPublisher.publishEvent(
-            ReturnEvents.RETURN_CREATED,
-            ReturnDTO(savedReturn.id!!, orderId, returnInput.orderItemIds, returnInput.reason, refundedAmount)
+            ReturnEvents.RETURN_CREATED, savedReturn.toEventDTO(returnInput.orderItemIds)
         )
         return savedReturn
     }
@@ -85,15 +89,33 @@ class ReturnService(
             "Missing data about order items, please try again later"
         }
         val originalShipments = orderItems.map { it.sentWithId }.toSet()
-        val shipmentsById = shipmentRepository.findAllById(originalShipments).collectList().awaitSingle().associateBy { it.id }
+        val shipmentsById =
+            shipmentRepository.findAllById(originalShipments).collectList().awaitSingle().associateBy { it.id }
         require(shipmentsById.values.all { it.deliveredAt != null }) { "At least one order item was not delivered" }
         require(orderItems.all { it.orderId == orderId }) { "All order items must belong to the same order" }
+        validateItemsCanStillBeReturned(orderItems, shipmentsById)
+    }
+
+    /**
+     * Validates that the items can still be returned
+     *
+     * @param orderItems the order items to validate
+     */
+    private suspend fun validateItemsCanStillBeReturned(
+        orderItems: List<OrderItemEntity>, shipmentsById: Map<UUID, ShipmentEntity>
+    ) {
+        val productVariantVersions = productVariantVersionRepository.findAllById(
+            orderItems.map { it.productVariantVersionId!! }.toSet()
+        ).collectList().awaitSingle().associateBy { it.id }
         for (orderItem in orderItems) {
-            val productVariantVersion = productVariantVersionRepository.findById(orderItem.productVariantVersionId!!).awaitSingle()
-            if (productVariantVersion.canBeReturnedForDays != null) {
-                require(productVariantVersion.canBeReturnedForDays > 0) { "Order item ${orderItem.id} cannot be returned" }
-                val passedDays = Duration.between(shipmentsById[orderItem.sentWithId]!!.deliveredAt, OffsetDateTime.now()).toDays()
-                require(passedDays <= productVariantVersion.canBeReturnedForDays) { "Order item ${orderItem.id} can no longer be returned" }
+            val productVariantVersion =
+                productVariantVersions[orderItem.productVariantVersionId] ?: error("Product variant version not found")
+            val canBeReturnedForDays = productVariantVersion.canBeReturnedForDays
+            if (canBeReturnedForDays != null) {
+                require(canBeReturnedForDays > 0) { "Order item ${orderItem.id} cannot be returned" }
+                val passedDays =
+                    Duration.between(shipmentsById[orderItem.sentWithId]!!.deliveredAt, OffsetDateTime.now()).toDays()
+                require(passedDays <= canBeReturnedForDays) { "Order item ${orderItem.id} can no longer be returned" }
             }
         }
     }

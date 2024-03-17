@@ -10,11 +10,13 @@ import java.util.*
  * @property orderItemIds ids of the order items returned
  * @property reason the reason for the return
  * @property refundedAmount the amount of money refunded
+ * @property createdAt the time the return was created
  */
 data class ReturnDTO(
     val id: UUID,
     val orderId: UUID,
     val orderItemIds: List<UUID>,
     val reason: String,
-    val refundedAmount: Long
+    val refundedAmount: Long,
+    val createdAt: String
 )

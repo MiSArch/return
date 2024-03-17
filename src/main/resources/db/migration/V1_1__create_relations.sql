@@ -10,6 +10,7 @@ CREATE TABLE ReturnEntity (
     reason VARCHAR(255) NOT NULL,
     orderId UUID NOT NULL,
     refundedAmount BIGINT NOT NULL,
+    createdAt TIMESTAMPTZ NOT NULL,
     FOREIGN KEY (orderId) REFERENCES OrderEntity(id)
 );
 
