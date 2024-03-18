@@ -2,6 +2,8 @@ package org.misarch.returns.graphql.model
 
 import com.expediagroup.graphql.generator.annotations.GraphQLDescription
 import com.expediagroup.graphql.generator.annotations.GraphQLIgnore
+import com.expediagroup.graphql.generator.federation.directives.FieldSet
+import com.expediagroup.graphql.generator.federation.directives.KeyDirective
 import graphql.schema.DataFetchingEnvironment
 import org.misarch.returns.graphql.authorizedUserOrNull
 import org.misarch.returns.graphql.model.connection.OrderItemConnection
@@ -13,6 +15,7 @@ import java.time.OffsetDateTime
 import java.util.*
 
 @GraphQLDescription("A return.")
+@KeyDirective(fields = FieldSet("id"))
 class Return(
     id: UUID,
     @property:GraphQLDescription("The reason for the return.")
