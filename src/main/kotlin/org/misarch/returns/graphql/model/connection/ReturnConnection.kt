@@ -70,7 +70,7 @@ enum class ReturnOrderField(override vararg val expressions: Expression<out Comp
 
 }
 
-@GraphQLDescription("Return order")
+@GraphQLDescription("Direction to sort returns in")
 class ReturnOrder(
     direction: OrderDirection?, field: ReturnOrderField?
 ) : BaseOrder<ReturnOrderField>(direction, field) {
