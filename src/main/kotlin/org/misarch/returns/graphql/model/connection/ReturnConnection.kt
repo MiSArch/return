@@ -63,14 +63,14 @@ class ReturnConnection(
     }
 }
 
-@GraphQLDescription("Return  order fields")
+@GraphQLDescription("Return order fields")
 enum class ReturnOrderField(override vararg val expressions: Expression<out Comparable<*>>) : BaseOrderField {
-    @GraphQLDescription("Order return s by their id")
+    @GraphQLDescription("Order returns by their id")
     ID(ReturnEntity.ENTITY.id),
 
 }
 
-@GraphQLDescription("Return  order")
+@GraphQLDescription("Return order")
 class ReturnOrder(
     direction: OrderDirection?, field: ReturnOrderField?
 ) : BaseOrder<ReturnOrderField>(direction, field) {
